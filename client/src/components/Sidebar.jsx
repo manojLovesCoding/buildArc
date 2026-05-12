@@ -47,7 +47,7 @@ const Sidebar = () => {
     {
       name: "Meetings",
       icon: <Calendar size={20} />,
-      path: "/meetings",
+      path: "/login",
     },
   ];
 
