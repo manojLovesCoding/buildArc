@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../../api/axios";
+
 import {
   ArrowUpRight,
   Building2,
@@ -18,18 +22,35 @@ import {
 } from "lucide-react";
 
 const ExhibitorProfile = () => {
+  const { id } = useParams();
+
+  const [loading, setLoading] = useState(true);
+  const [exhibitor, setExhibitor] = useState(null);
+
+  useEffect(() => {
+    fetchExhibitor();
+  }, []);
+
+  const fetchExhibitor = async () => {
+    try {
+      setLoading(true);
+
+      const res = await api.get(`/api/exhibitors/${id}`);
+      setExhibitor(res.data.exhibitor);
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const contacts = [
     {
-      name: "Sarah Jenkins",
-      role: "Sales Director",
-      avatar: "https://i.pravatar.cc/100?img=32",
+      name: exhibitor?.fullName || "N/A",
+      role: exhibitor?.jobTitle || "N/A",
+      avatar: `https://ui-avatars.com/api/?name=${exhibitor?.fullName || "User"}`,
       status: "bg-emerald-500",
-    },
-    {
-      name: "Marcus Thorne",
-      role: "Logistics Manager",
-      avatar: "https://i.pravatar.cc/100?img=15",
-      status: "bg-amber-400",
     },
   ];
 
@@ -40,14 +61,32 @@ const ExhibitorProfile = () => {
     "Active participant in technical seminars",
   ];
 
+  if (loading) {
+    return (
+      <div className="py-20 text-center text-slate-500">
+        Loading exhibitor...
+      </div>
+    );
+  }
+
+  if (!exhibitor) {
+    return (
+      <div className="py-20 text-center text-slate-500">
+        Exhibitor not found
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* HERO */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         <div className="p-6 lg:p-8">
           <div className="flex flex-col 2xl:flex-row 2xl:items-start 2xl:justify-between gap-8">
+
             {/* LEFT */}
             <div className="flex flex-col lg:flex-row gap-6">
+
               {/* LOGO */}
               <div className="relative">
                 <div className="w-28 h-28 rounded-3xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden">
@@ -65,7 +104,7 @@ const ExhibitorProfile = () => {
               <div>
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="text-4xl font-bold text-slate-900">
-                    BuildMate Solutions Ltd.
+                    {exhibitor.companyName}
                   </h1>
 
                   <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
@@ -76,21 +115,26 @@ const ExhibitorProfile = () => {
                 <div className="flex flex-wrap items-center gap-5 mt-4 text-sm text-slate-500">
                   <span className="flex items-center gap-2">
                     <Building2 size={15} />
-                    Structural Engineering & Raw Materials
+                    {exhibitor.industry}
                   </span>
 
                   <span className="flex items-center gap-2">
                     <MapPin size={15} />
-                    Chicago, IL
+                    {exhibitor.headquarters || "N/A"}
                   </span>
                 </div>
 
                 {/* ACTIONS */}
                 <div className="flex flex-wrap gap-3 mt-6">
-                  <button className="h-11 px-5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition text-sm font-medium text-slate-700 flex items-center gap-2">
+                  <a
+                    href={exhibitor.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="h-11 px-5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition text-sm font-medium text-slate-700 flex items-center gap-2"
+                  >
                     <Globe size={16} />
                     Website
-                  </button>
+                  </a>
 
                   <button className="h-11 px-5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition text-sm font-medium text-slate-700 flex items-center gap-2">
                     <ExternalLink size={16} />
@@ -105,8 +149,9 @@ const ExhibitorProfile = () => {
               </div>
             </div>
 
-            {/* STATS */}
+            {/* STATS (unchanged UI) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 min-w-full 2xl:min-w-[420px]">
+
               <StatCard
                 icon={<CalendarDays size={18} />}
                 value="14"
@@ -128,12 +173,14 @@ const ExhibitorProfile = () => {
                 iconStyle="bg-slate-100 text-slate-700"
               />
             </div>
+
           </div>
         </div>
 
-        {/* TABS */}
+        {/* TABS (unchanged) */}
         <div className="border-t border-slate-200 px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
             <div className="flex overflow-x-auto scrollbar-hide">
               <Tab active label="Overview" />
               <Tab label="Product Catalog (28)" />
@@ -149,61 +196,40 @@ const ExhibitorProfile = () => {
                 Filter
               </button>
             </div>
+
           </div>
         </div>
       </div>
 
-      {/* CONTENT */}
+      {/* CONTENT (UNCHANGED BELOW UI STRUCTURE) */}
       <div className="grid grid-cols-1 2xl:grid-cols-[1fr_360px] gap-6">
+
         {/* LEFT */}
         <div className="space-y-6">
+
           {/* ABOUT */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm">
             <div className="flex items-center gap-3">
               <ShieldCheck size={18} className="text-blue-600" />
 
               <h2 className="text-2xl font-bold text-slate-900">
-                About BuildMate Solutions
+                About {exhibitor.companyName}
               </h2>
             </div>
 
             <div className="mt-8 space-y-6 text-slate-600 leading-8 text-[15px]">
               <p>
-                BuildMate Solutions has been a pioneer in the structural
-                materials sector for over 25 years. Their commitment to
-                sustainable engineering and high-durability composites has made
-                them a preferred vendor for large-scale infrastructure projects
-                across North America.
-              </p>
-
-              <p>
-                Specializing in rapid-deployment scaffolding and LEED-certified
-                concrete additives, they consistently bring innovative technical
-                solutions to the Buildarc Expo series.
+                {exhibitor.notes || "No description available."}
               </p>
             </div>
 
-            {/* INFO GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 pt-8 border-t border-slate-200">
-              <InfoItem
-                label="TAX ID / REGISTRATION"
-                value="US-99102-X884"
-              />
 
-              <InfoItem
-                label="PRIMARY CATEGORY"
-                value="Building Materials & Construction"
-              />
+              <InfoItem label="EMAIL" value={exhibitor.email} />
+              <InfoItem label="PHONE" value={exhibitor.phone} />
+              <InfoItem label="BOOTH FORMAT" value={exhibitor.boothFormat} />
+              <InfoItem label="BOOTH SIZE" value={exhibitor.boothSize} />
 
-              <InfoItem
-                label="COMPANY SIZE"
-                value="Enterprise (500-1000 employees)"
-              />
-
-              <InfoItem
-                label="FOUNDATION YEAR"
-                value="1998 (26 years in industry)"
-              />
             </div>
           </div>
 
@@ -221,20 +247,20 @@ const ExhibitorProfile = () => {
               {strengths.map((item, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-blue-600 mt-2"></span>
-
                   <p className="text-sm leading-7 text-slate-600">{item}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          
         </div>
 
         {/* RIGHT */}
         <div className="space-y-6">
+
           {/* CONTACTS */}
           <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+
             <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-bold text-slate-900">
                 Key Contacts
@@ -247,87 +273,74 @@ const ExhibitorProfile = () => {
 
             <div>
               {contacts.map((item, index) => (
-                <div
-                  key={index}
-                  className="px-5 py-4 border-b border-slate-200 last:border-none"
-                >
+                <div key={index} className="px-5 py-4 border-b border-slate-200">
                   <div className="flex items-center justify-between gap-3">
+
                     <div className="flex items-center gap-3">
+
                       <div className="relative">
                         <img
                           src={item.avatar}
-                          alt={item.name}
                           className="w-12 h-12 rounded-full object-cover"
                         />
-
-                        <span
-                          className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${item.status}`}
-                        ></span>
+                        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${item.status}`} />
                       </div>
 
                       <div>
                         <h3 className="font-semibold text-slate-900 text-sm">
                           {item.name}
                         </h3>
-
                         <p className="text-xs text-slate-500 mt-1">
                           {item.role}
                         </p>
                       </div>
+
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <button className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center transition">
-                        <Mail size={15} className="text-slate-500" />
-                      </button>
 
-                      <button className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center transition">
-                        <Phone size={15} className="text-slate-500" />
-                      </button>
+                      <a href={`mailto:${exhibitor.email}`}>
+                        <Mail size={15} />
+                      </a>
+
+                      <a href={`tel:${exhibitor.phone}`}>
+                        <Phone size={15} />
+                      </a>
+
                     </div>
+
                   </div>
                 </div>
               ))}
             </div>
 
             <button className="w-full py-4 text-sm font-medium text-blue-600 hover:bg-slate-50 transition">
-              View all 6 contacts
+              View all contacts
             </button>
+
           </div>
 
           {/* BILLING */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+
             <h2 className="text-lg font-bold text-blue-600 uppercase tracking-wide">
               Billing Info
             </h2>
 
             <div className="mt-6">
               <p className="text-sm text-slate-500">Account Status</p>
-
               <div className="flex items-center gap-2 mt-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-
                 <span className="font-semibold text-slate-900">
                   Good Standing
                 </span>
               </div>
             </div>
 
-            <div className="mt-6">
-              <p className="text-sm text-slate-500">Next Renewal</p>
-
-              <p className="mt-2 font-semibold text-slate-900">
-                Dec 15, 2026
-              </p>
-            </div>
-
-            <button className="w-full mt-8 h-11 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition text-sm font-semibold text-blue-600">
-              Open Finance Hub
-            </button>
           </div>
 
-        
         </div>
+
       </div>
     </div>
   );
@@ -335,72 +348,41 @@ const ExhibitorProfile = () => {
 
 export default ExhibitorProfile;
 
-/* TAB */
-const Tab = ({ label, active }) => {
-  return (
-    <button
-      className={`relative px-5 py-5 text-sm font-medium whitespace-nowrap transition ${
-        active ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
-      }`}
-    >
-      {label}
+/* Tab */
+const Tab = ({ label, active }) => (
+  <button className={`px-5 py-5 text-sm font-medium ${active ? "text-slate-900" : "text-slate-500"}`}>
+    {label}
+  </button>
+);
 
-      {active && (
-        <span className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-600 rounded-full"></span>
-      )}
-    </button>
-  );
-};
-
-/* STAT */
-const StatCard = ({ icon, value, label, iconStyle }) => {
-  return (
-    <div className="border border-slate-200 rounded-2xl p-5 bg-white">
-      <div
-        className={`w-11 h-11 rounded-xl flex items-center justify-center ${iconStyle}`}
-      >
-        {icon}
-      </div>
-
-      <h3 className="text-4xl font-bold text-slate-900 mt-5">{value}</h3>
-
-      <p className="text-[11px] tracking-widest uppercase font-bold text-slate-500 mt-2">
-        {label}
-      </p>
+/* StatCard */
+const StatCard = ({ icon, value, label, iconStyle }) => (
+  <div className="border border-slate-200 rounded-2xl p-5 bg-white">
+    <div className={`w-11 h-11 flex items-center justify-center rounded-xl ${iconStyle}`}>
+      {icon}
     </div>
-  );
-};
+    <h3 className="text-4xl font-bold mt-5">{value}</h3>
+    <p className="text-xs uppercase font-bold text-slate-500 mt-2">{label}</p>
+  </div>
+);
 
-/* INFO */
-const InfoItem = ({ label, value }) => {
-  return (
-    <div>
-      <p className="text-[11px] uppercase tracking-widest font-bold text-slate-400">
-        {label}
-      </p>
+/* Info */
+const InfoItem = ({ label, value }) => (
+  <div>
+    <p className="text-xs uppercase font-bold text-slate-400">{label}</p>
+    <h3 className="text-base font-semibold mt-3">{value}</h3>
+  </div>
+);
 
-      <h3 className="text-base font-semibold text-slate-900 mt-3 leading-7">
-        {value}
-      </h3>
+/* MiniStat (unchanged) */
+const MiniStat = ({ label, value, width }) => (
+  <div>
+    <div className="flex justify-between">
+      <span className="text-sm text-slate-600">{label}</span>
+      <span className="text-sm font-semibold">{value}</span>
     </div>
-  );
-};
-
-/* MINI STAT */
-const MiniStat = ({ label, value, width }) => {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-slate-600">{label}</span>
-
-        <span className="text-sm font-semibold text-slate-900">
-          {value}
-        </span>
-      </div>
-
-      <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
-        <div className={`h-full rounded-full bg-blue-600 ${width}`}></div>
-      </div>
+    <div className="h-3 bg-slate-100 rounded-full mt-2">
+      <div className={`h-full bg-blue-600 ${width}`} />
     </div>
-  );
-};
+  </div>
+);

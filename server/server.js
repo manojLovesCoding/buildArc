@@ -5,6 +5,7 @@ import multer from "multer";
 import connectDB from "./config/db.js";
 import authrouter from "./routes/authRoutes.js";
 import leadRouter from "./routes/leadRoutes.js";
+import exhibitorRouter from "./routes/exhibitorRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -19,4 +20,5 @@ app.get("/", (req, res) => res.send("server is running"));
 await connectDB();
 app.use("/api/auth", authrouter);
 app.use("/api/leads", leadRouter);
+app.use("/api/exhibitors", exhibitorRouter);
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

@@ -12,6 +12,7 @@ import SalesPipeline from "./pages/SalesPipeline";
 import LeadsManagement from "./pages/LeadsManagement";
 import AdminRoute from "./routes/AdminRoute";
 import CreateLeadPage from "./components/CreateLeadModal";
+import RegisterExhibitorPage from "./pages/RegisterExhibitorPage";
 {
   /*import LoginLanding from "./pages/LoginLanding";
 import Dashboard from "./pages/Dashboard";
@@ -37,8 +38,15 @@ const App = () => {
             <Route path="/create-leads" element={<CreateLeadPage />} />
             <Route path="/lead-management" element={<LeadsManagement />} />
             <Route path="/lead-details" element={<LeadDetails />} />
+            <Route
+              path="/register-exhibitor"
+              element={<RegisterExhibitorPage />}
+            />
             <Route path="/exhibitors-list" element={<ExhibitorsList />} />
-            <Route path="/exhibitor-profile" element={<ExhibitorProfile />} />
+            <Route
+              path="/exhibitor-profile/:id"
+              element={<ExhibitorProfile />}
+            />
             <Route path="/events-list" element={<EventsList />} />
             <Route path="/events-details" element={<Booths />} />
             <Route path="/sales-pipeline" element={<SalesPipeline />} />
