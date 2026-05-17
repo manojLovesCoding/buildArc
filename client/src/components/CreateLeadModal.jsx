@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const assignedUsers = [
   {
@@ -29,8 +30,9 @@ const tags = [
   { label: "Architect 2024", color: "bg-blue-600 text-white" },
 ];
 
-export default function CreateLeadModal({ onClose }) {
+export default function CreateLeadPage() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -70,7 +72,8 @@ export default function CreateLeadModal({ onClose }) {
       alert(res.data.message || "Lead created successfully");
 
       setLoading(false);
-      onClose(); // close modal after success
+
+      navigate("/lead-management");
     } catch (error) {
       alert(error.response?.data?.message || "Something went wrong");
       setLoading(false);
@@ -78,8 +81,9 @@ export default function CreateLeadModal({ onClose }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <div>
@@ -98,21 +102,16 @@ export default function CreateLeadModal({ onClose }) {
                 Admin
               </span>
             </div>
-
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-xl"
-            >
-              ✕
-            </button>
           </div>
         </div>
 
         {/* Content */}
         <div className="flex flex-col lg:flex-row">
+
           {/* Left Form */}
           <div className="flex-1 p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
               {/* Full Name */}
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">
@@ -250,6 +249,7 @@ export default function CreateLeadModal({ onClose }) {
 
           {/* Sidebar */}
           <div className="w-full lg:w-[320px] border-t lg:border-t-0 lg:border-l border-gray-200 bg-gray-50 p-6">
+
             {/* Assigned User */}
             <div>
               <h4 className="text-xs font-semibold uppercase text-gray-500 mb-3">
@@ -359,7 +359,7 @@ export default function CreateLeadModal({ onClose }) {
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
-              onClick={onClose}
+              onClick={() => navigate("/lead-management")}
               className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
             >
               Cancel
@@ -374,6 +374,7 @@ export default function CreateLeadModal({ onClose }) {
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );

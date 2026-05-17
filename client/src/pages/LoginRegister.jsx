@@ -1,8 +1,89 @@
 // LoginRegister.jsx
 import { useState } from "react";
+import api from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginRegister() {
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
+  // form state
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  // handle input changes
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setMessage("");
+
+    try {
+      setLoading(true);
+
+      // REGISTER
+      if (!isLogin) {
+        if (formData.password !== formData.confirmPassword) {
+          return setMessage("Passwords do not match");
+        }
+
+        const { data } = await api.post("/api/auth/register", {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        });
+
+        // save token
+        localStorage.setItem("token", data.token);
+
+        setMessage(data.message);
+
+        navigate("/dashboard");
+        console.log("REGISTER SUCCESS:", data);
+
+        // optional redirect
+        // navigate("/dashboard");
+      }
+
+      // LOGIN
+      else {
+        const { data } = await api.post("/api/auth/login", {
+          email: formData.email,
+          password: formData.password,
+        });
+
+        // save token
+        localStorage.setItem("token", data.token);
+
+        setMessage(data.message);
+
+        navigate("/dashboard");
+        console.log("LOGIN SUCCESS:", data);
+
+        // optional redirect
+        // navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+
+      setMessage(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-3 sm:px-4 py-6">
@@ -19,8 +100,19 @@ export default function LoginRegister() {
               : "Register your account to get started"}
           </p>
 
+          {/* message */}
+          {message && (
+            <div className="mt-4 text-center text-sm font-medium text-blue-600">
+              {message}
+            </div>
+          )}
+
           {/* Form */}
-          <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-5">
+          <form
+            onSubmit={handleSubmit}
+            className="mt-6 sm:mt-8 space-y-4 sm:space-y-5"
+          >
+            {/* Name */}
             {!isLogin && (
               <div>
                 <label className="block text-[11px] sm:text-xs font-semibold text-gray-600 uppercase mb-2">
@@ -29,7 +121,11 @@ export default function LoginRegister() {
 
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="John Doe"
+                  required
                   className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -43,7 +139,11 @@ export default function LoginRegister() {
 
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="admin@buildarc.com"
+                required
                 className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -67,7 +167,11 @@ export default function LoginRegister() {
 
               <input
                 type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 placeholder="••••••••"
+                required
                 className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -81,7 +185,11 @@ export default function LoginRegister() {
 
                 <input
                   type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
                   placeholder="••••••••"
+                  required
                   className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -105,81 +213,34 @@ export default function LoginRegister() {
               </div>
             )}
 
-            {/* Button */}
+            {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-2.5 sm:py-3 rounded-lg text-sm sm:text-base"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-2.5 sm:py-3 rounded-lg text-sm sm:text-base disabled:opacity-50"
             >
-              {isLogin ? "Sign In to Buildarc" : "Create Account"}
+              {loading
+                ? "Please wait..."
+                : isLogin
+                  ? "Sign In to Buildarc"
+                  : "Create Account"}
             </button>
           </form>
 
           {/* Toggle */}
           <div className="mt-5 sm:mt-6 text-center text-xs sm:text-sm text-gray-600">
-            {isLogin
-              ? "Don't have an account?"
-              : "Already have an account?"}
+            {isLogin ? "Don't have an account?" : "Already have an account?"}
 
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setMessage("");
+              }}
               className="ml-2 text-blue-600 font-semibold hover:underline"
             >
               {isLogin ? "Register" : "Login"}
             </button>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="border-t bg-gray-50 px-4 sm:px-6 md:px-8 py-4 sm:py-5">
-          <div className="space-y-3">
-            <div className="bg-white border rounded-lg p-3">
-              <h3 className="font-semibold text-sm text-gray-800">
-                Administrators
-              </h3>
-
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                Full control over event floor plans, booth allocations, and
-                user permissions.
-              </p>
-            </div>
-
-            <div className="bg-white border rounded-lg p-3">
-              <h3 className="font-semibold text-sm text-gray-800">
-                Sales & Marketing
-              </h3>
-
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                Manage leads, update exhibitor profiles, and track sales
-                pipeline progress.
-              </p>
-            </div>
-
-            <div className="bg-white border rounded-lg p-3">
-              <h3 className="font-semibold text-sm text-gray-800">
-                Reporting / Viewers
-              </h3>
-
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                Access analytics dashboards and historical event performance
-                data.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Links */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs text-gray-500 py-4 px-4">
-          <button className="hover:text-blue-600 transition">
-            Help Center
-          </button>
-
-          <button className="hover:text-blue-600 transition">
-            Security Policy
-          </button>
-
-          <button className="hover:text-blue-600 transition">
-            Contact Support
-          </button>
         </div>
       </div>
     </div>

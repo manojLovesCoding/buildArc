@@ -17,8 +17,10 @@ import {
   Map,
   Plane,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const stats = [
     {
       title: "TOTAL LEADS",
@@ -142,7 +144,10 @@ const Dashboard = () => {
                 Export Report
               </button>
 
-              <button className="flex-1 sm:flex-none h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold flex items-center justify-center gap-2">
+              <button
+                onClick={() => navigate("/create-leads")}
+                className="flex-1 sm:flex-none h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold flex items-center justify-center gap-2"
+              >
                 <Plus size={16} />
                 New Lead
               </button>
@@ -233,7 +238,7 @@ const Dashboard = () => {
 
                 {/* MONTHS */}
                 <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-slate-400 px-10">
-                  {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map((m) => (
+                  {["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((m) => (
                     <span key={m}>{m}</span>
                   ))}
                 </div>
@@ -244,7 +249,11 @@ const Dashboard = () => {
                 >
                   <defs>
                     <linearGradient id="paint" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.35" />
+                      <stop
+                        offset="0%"
+                        stopColor="#60a5fa"
+                        stopOpacity="0.35"
+                      />
 
                       <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
                     </linearGradient>
@@ -299,11 +308,7 @@ const Dashboard = () => {
                   value="$300k"
                 />
 
-                <Legend
-                  color="bg-black"
-                  label="Lead Retrieval"
-                  value="$150k"
-                />
+                <Legend color="bg-black" label="Lead Retrieval" value="$150k" />
 
                 <Legend
                   color="bg-slate-300"
@@ -375,9 +380,7 @@ const Dashboard = () => {
                   Booth Utilization Rate (Avg)
                 </span>
 
-                <span className="text-sm font-semibold text-blue-600">
-                  82%
-                </span>
+                <span className="text-sm font-semibold text-blue-600">82%</span>
               </div>
 
               <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
@@ -460,7 +463,9 @@ const Dashboard = () => {
 
       {/* FOOTER */}
       <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm text-slate-500 shadow-sm">
-        <p>© 2026 Buildarc CRM. Construction Industry Trade Exhibition Platform.</p>
+        <p>
+          © 2026 Buildarc CRM. Construction Industry Trade Exhibition Platform.
+        </p>
 
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-2">

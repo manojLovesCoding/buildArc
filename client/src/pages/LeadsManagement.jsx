@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
-
+import { useNavigate } from "react-router-dom";
 
 export default function LeadsManagement() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const fetchLeads = async () => {
     try {
       setLoading(true);
@@ -24,10 +24,8 @@ export default function LeadsManagement() {
 
   return (
     <div className="p-6 bg-slate-50 min-h-screen space-y-6">
-
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-
         <div>
           <h1 className="text-2xl font-bold text-slate-900">
             Leads Management
@@ -44,16 +42,17 @@ export default function LeadsManagement() {
           <button className="px-4 py-2 text-sm border rounded-xl bg-white">
             Export
           </button>
-          <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-xl">
+          <button
+            onClick={() => navigate("/create-leads")}
+            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-xl"
+          >
             + New Lead
           </button>
         </div>
-
       </div>
 
       {/* FILTER BAR */}
       <div className="bg-white border rounded-2xl p-4 flex flex-col lg:flex-row gap-3 lg:items-center">
-
         <input
           placeholder="Search leads, companies, emails..."
           className="flex-1 border rounded-xl px-4 py-2 text-sm"
@@ -78,7 +77,6 @@ export default function LeadsManagement() {
 
       {/* TABLE CARD */}
       <div className="bg-white border rounded-2xl overflow-hidden shadow-sm">
-
         {/* TABLE HEADER */}
         <div className="grid grid-cols-7 gap-4 px-5 py-3 text-xs font-semibold text-slate-500 border-b bg-slate-50">
           <input type="checkbox" />
@@ -99,24 +97,17 @@ export default function LeadsManagement() {
               key={lead._id}
               className="grid grid-cols-7 gap-4 px-5 py-4 border-b hover:bg-slate-50 items-center"
             >
-
               {/* checkbox */}
               <input type="checkbox" />
 
               {/* NAME */}
               <div>
-                <p className="font-medium text-slate-900">
-                  {lead.fullName}
-                </p>
-                <p className="text-xs text-slate-400">
-                  {lead.email}
-                </p>
+                <p className="font-medium text-slate-900">{lead.fullName}</p>
+                <p className="text-xs text-slate-400">{lead.email}</p>
               </div>
 
               {/* COMPANY */}
-              <div className="text-sm text-slate-700">
-                {lead.company}
-              </div>
+              <div className="text-sm text-slate-700">{lead.company}</div>
 
               {/* TYPE */}
               <div>
@@ -126,9 +117,7 @@ export default function LeadsManagement() {
               </div>
 
               {/* SOURCE */}
-              <div className="text-sm text-slate-600">
-                {lead.source}
-              </div>
+              <div className="text-sm text-slate-600">{lead.source}</div>
 
               {/* STATUS */}
               <div>
@@ -139,15 +128,11 @@ export default function LeadsManagement() {
 
               {/* ASSIGNED + ACTION */}
               <div className="flex items-center justify-end gap-3">
-
-                <span className="text-sm text-slate-600">
-                  Sarah Chen
-                </span>
+                <span className="text-sm text-slate-600">Sarah Chen</span>
 
                 <button className="text-slate-400 hover:text-slate-600">
                   ⋯
                 </button>
-
               </div>
             </div>
           ))
@@ -156,7 +141,6 @@ export default function LeadsManagement() {
 
       {/* PAGINATION */}
       <div className="flex items-center justify-between text-sm">
-
         <p className="text-slate-500">
           Showing {leads.length} of {leads.length} leads
         </p>
@@ -169,9 +153,7 @@ export default function LeadsManagement() {
           <button className="px-3 py-1 border rounded-xl">2</button>
           <button className="px-3 py-1 border rounded-xl">Next</button>
         </div>
-
       </div>
-
     </div>
   );
 }

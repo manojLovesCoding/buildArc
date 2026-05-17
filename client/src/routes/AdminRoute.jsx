@@ -1,15 +1,22 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const AdminRoute = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
-  // not logged in
-  if (!user) {
+  if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  // not admin
-  if (user.role !== "admin") {
+  let decoded;
+  
+  try {
+    decoded = jwtDecode(token);
+  } catch (err) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (decoded.role !== "admin") {
     return <Navigate to="/dashboard" replace />;
   }
 

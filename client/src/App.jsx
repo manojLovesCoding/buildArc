@@ -9,6 +9,9 @@ import ExhibitorProfile from "./pages/ExhibitorProfile";
 import EventsList from "./pages/EventsList";
 import Booths from "./pages/eventDetails";
 import SalesPipeline from "./pages/SalesPipeline";
+import LeadsManagement from "./pages/LeadsManagement";
+import AdminRoute from "./routes/AdminRoute";
+import CreateLeadPage from "./components/CreateLeadModal";
 {
   /*import LoginLanding from "./pages/LoginLanding";
 import Dashboard from "./pages/Dashboard";
@@ -28,14 +31,18 @@ const App = () => {
       <Toaster />
       <Routes>
         <Route path="/login" element={<LoginRegister />} />
-        <Route element={<Layout />}>
-         <Route path="/dashboard" element={<Dashboard />} />
-         <Route path="/lead-details" element={<LeadDetails />} />
-         <Route path="/exhibitors-list" element={<ExhibitorsList />} />
-         <Route path="/exhibitor-profile" element={<ExhibitorProfile />} />
-         <Route path="/events-list" element={<EventsList />} />
-         <Route path="/events-details" element={<Booths />} />
-         <Route path="/sales-pipeline" element={<SalesPipeline />} />
+        <Route element={<AdminRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/create-leads" element={<CreateLeadPage />} />
+            <Route path="/lead-management" element={<LeadsManagement />} />
+            <Route path="/lead-details" element={<LeadDetails />} />
+            <Route path="/exhibitors-list" element={<ExhibitorsList />} />
+            <Route path="/exhibitor-profile" element={<ExhibitorProfile />} />
+            <Route path="/events-list" element={<EventsList />} />
+            <Route path="/events-details" element={<Booths />} />
+            <Route path="/sales-pipeline" element={<SalesPipeline />} />
+          </Route>
         </Route>
         <Route path="/*" element={<Navigate to="/dashboard" replace />} />
 

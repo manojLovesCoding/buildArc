@@ -1,6 +1,7 @@
 // components/Sidebar.jsx
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+
 import {
   LayoutDashboard,
   Users,
@@ -14,9 +15,26 @@ import {
   Settings,
   Bell,
 } from "lucide-react";
+import api from "../../api/axios";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
+  const [admin, setAdmin] = useState(null); // ✅ ADDED
+  const navigate = useNavigate();
+
+  // ✅ FETCH ADMIN
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      try {
+        const res = await api.get("/api/auth/profile");
+        setAdmin(res.data.user);
+      } catch (error) {
+        console.error("Failed to fetch admin:", error);
+      }
+    };
+
+    fetchAdmin();
+  }, []);
 
   const navItems = [
     {
@@ -25,9 +43,9 @@ const Sidebar = () => {
       path: "/dashboard",
     },
     {
-      name: "Leads",
+      name: "Leads Management",
       icon: <Users size={20} />,
-      path: "/lead-details",
+      path: "/lead-management",
     },
     {
       name: "Exhibitors",
@@ -51,11 +69,17 @@ const Sidebar = () => {
     },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+  };
+
   return (
     <>
       {/* MOBILE TOPBAR */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4">
-        {/* Logo */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg">
             B
@@ -65,12 +89,10 @@ const Sidebar = () => {
             <h1 className="font-bold text-slate-900 leading-none">
               Buildarc CRM
             </h1>
-
             <p className="text-xs text-slate-500">Admin Panel</p>
           </div>
         </div>
 
-        {/* MENU BUTTON */}
         <button
           onClick={() => setOpen(true)}
           className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center"
@@ -79,7 +101,6 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* OVERLAY */}
       {open && (
         <div
           onClick={() => setOpen(false)}
@@ -99,7 +120,6 @@ const Sidebar = () => {
       >
         {/* HEADER */}
         <div className="h-16 border-b border-slate-200 flex items-center justify-between px-5">
-          {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
               B
@@ -116,7 +136,6 @@ const Sidebar = () => {
             </div>
           </div>
 
-          {/* CLOSE BUTTON */}
           <button
             onClick={() => setOpen(false)}
             className="lg:hidden w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center"
@@ -125,25 +144,26 @@ const Sidebar = () => {
           </button>
         </div>
 
-        {/* USER */}
+        {/* USER (UPDATED ONLY THIS PART) */}
         <div className="p-5 border-b border-slate-200">
           <div className="flex items-center gap-4">
             <img
-              src="https://i.pravatar.cc/100"
+              src={admin?.avatar || "https://i.pravatar.cc/100"}
               alt="profile"
               className="w-14 h-14 rounded-2xl object-cover"
             />
 
             <div>
               <h3 className="font-semibold text-slate-900">
-                Alex Rivera
+                {admin?.name || "Loading..."}
               </h3>
 
-              <p className="text-sm text-slate-500">Administrator</p>
+              <p className="text-sm text-slate-500">
+                {admin?.role || "Administrator"}
+              </p>
             </div>
           </div>
 
-          {/* STATUS */}
           <div className="mt-4 flex items-center gap-2 text-sm text-emerald-600 font-medium">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             Online
@@ -177,20 +197,20 @@ const Sidebar = () => {
 
         {/* FOOTER */}
         <div className="p-4 border-t border-slate-200 space-y-2">
-          {/* Notifications */}
           <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
             <Bell size={20} />
             Notifications
           </button>
 
-          {/* Settings */}
           <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
             <Settings size={20} />
             Settings
           </button>
 
-          {/* Logout */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-red-500 hover:bg-red-50 transition">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-red-500 hover:bg-red-50 transition"
+          >
             <LogOut size={20} />
             Logout
           </button>
