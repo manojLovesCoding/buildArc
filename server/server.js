@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import authrouter from "./routes/authRoutes.js";
 import leadRouter from "./routes/leadRoutes.js";
 import exhibitorRouter from "./routes/exhibitorRoutes.js";
+import eventRouter from "./routes/eventRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -21,4 +22,5 @@ await connectDB();
 app.use("/api/auth", authrouter);
 app.use("/api/leads", leadRouter);
 app.use("/api/exhibitors", exhibitorRouter);
+app.use("/api/events", eventRouter);
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

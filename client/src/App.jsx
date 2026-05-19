@@ -13,6 +13,7 @@ import LeadsManagement from "./pages/LeadsManagement";
 import AdminRoute from "./routes/AdminRoute";
 import CreateLeadPage from "./components/CreateLeadModal";
 import RegisterExhibitorPage from "./pages/RegisterExhibitorPage";
+import CreateEventPage from "./pages/CreateEventPage";
 {
   /*import LoginLanding from "./pages/LoginLanding";
 import Dashboard from "./pages/Dashboard";
@@ -47,8 +48,9 @@ const App = () => {
               path="/exhibitor-profile/:id"
               element={<ExhibitorProfile />}
             />
+            <Route path="/create-event" element={<CreateEventPage />} />
             <Route path="/events-list" element={<EventsList />} />
-            <Route path="/events-details" element={<Booths />} />
+            <Route path="/events/:id/booths" element={<Booths />} />
             <Route path="/sales-pipeline" element={<SalesPipeline />} />
           </Route>
         </Route>

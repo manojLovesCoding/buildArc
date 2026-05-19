@@ -1,6 +1,8 @@
 // pages/eventDetails/Booths.jsx
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../../api/axios";
 import {
   CalendarDays,
   MapPin,
@@ -16,7 +18,27 @@ import {
 
 const Booths = () => {
   const [selectedTab, setSelectedTab] = useState("floor");
+  const { id } = useParams();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        setLoading(true);
+
+        const res = await api.get(`/api/events/${id}`);
+
+        setEvent(res.data.event);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [id]);
   const exhibitors = [
     {
       name: "Titan Steel Co.",
@@ -114,20 +136,23 @@ const Booths = () => {
 
             <div>
               <h1 className="text-2xl font-bold text-slate-900">
-                Buildarc International Expo 2026
+                {event?.eventName}
               </h1>
 
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-slate-500">
-                <span className="flex items-center gap-1">
+                <span>
                   <CalendarDays size={14} />
-                  Oct 12 - 15, 2026
+                  {event?.startDate && event?.endDate
+                    ? `${new Date(event.startDate).toDateString()} - ${new Date(
+                        event.endDate,
+                      ).toDateString()}`
+                    : "TBA"}
                 </span>
 
-                <span className="flex items-center gap-1">
+                <span>
                   <MapPin size={14} />
-                  Dubai World Trade Centre
+                  {event?.venueName}
                 </span>
-
                 <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
                   Active Planning
                 </span>
@@ -296,8 +321,8 @@ const Booths = () => {
                     booth.occupied
                       ? "border-blue-500 bg-blue-50"
                       : booth.premium
-                      ? "border-amber-300 bg-amber-50 border-dashed"
-                      : "border-slate-200 border-dashed hover:border-blue-300"
+                        ? "border-amber-300 bg-amber-50 border-dashed"
+                        : "border-slate-200 border-dashed hover:border-blue-300"
                   }
                 `}
               >
@@ -331,7 +356,6 @@ const Booths = () => {
             <div className="w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center">
               ⓘ
             </div>
-
             Tip: Drag brands from the holding pen directly onto empty booth
             slots.
           </div>
