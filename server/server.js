@@ -7,6 +7,7 @@ import authrouter from "./routes/authRoutes.js";
 import leadRouter from "./routes/leadRoutes.js";
 import exhibitorRouter from "./routes/exhibitorRoutes.js";
 import eventRouter from "./routes/eventRoutes.js";
+import dealRouter from "./routes/dealRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -23,4 +24,5 @@ app.use("/api/auth", authrouter);
 app.use("/api/leads", leadRouter);
 app.use("/api/exhibitors", exhibitorRouter);
 app.use("/api/events", eventRouter);
+app.use("/api/deals", dealRouter);
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

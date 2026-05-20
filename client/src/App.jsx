@@ -14,6 +14,7 @@ import AdminRoute from "./routes/AdminRoute";
 import CreateLeadPage from "./components/CreateLeadModal";
 import RegisterExhibitorPage from "./pages/RegisterExhibitorPage";
 import CreateEventPage from "./pages/CreateEventPage";
+import CreateDealPage from "./pages/CreateDealPage";
 {
   /*import LoginLanding from "./pages/LoginLanding";
 import Dashboard from "./pages/Dashboard";
@@ -51,6 +52,7 @@ const App = () => {
             <Route path="/create-event" element={<CreateEventPage />} />
             <Route path="/events-list" element={<EventsList />} />
             <Route path="/events/:id/booths" element={<Booths />} />
+            <Route path="/create-deal" element={<CreateDealPage />} />
             <Route path="/sales-pipeline" element={<SalesPipeline />} />
           </Route>
         </Route>

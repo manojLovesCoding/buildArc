@@ -120,7 +120,7 @@ const EventsList = () => {
               Filters
             </button>
 
-            <button className="h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold flex items-center gap-2">
+            <button onClick={() => navigate("/create-event")} className="h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold flex items-center gap-2">
               <Plus size={16} />
               Create Event
             </button>
